@@ -1,0 +1,102 @@
+.navbar-inverse {
+	  background-color: #E0E9EE;
+	    border-color: #003E69; 
+    }
+    .navbar-inverse .navbar-brand {
+	      color: #003E69;
+      }
+      .navbar-inverse .navbar-brand:hover,
+      .navbar-inverse .navbar-brand:focus {
+	        color: #003E69;    # main title
+		  background-color: transparent; #main title 
+	  }
+	  .navbar-inverse .navbar-text {
+		    color: #003E69;
+	    }
+	    .navbar-inverse .navbar-nav > li > a {
+		      color: #003E69;
+	      }
+	      .navbar-inverse .navbar-nav > li > a:hover,
+	      .navbar-inverse .navbar-nav > li > a:focus {
+		        color: #ffffff;
+			  background-color: #44A5BC;
+		  }
+		  .navbar-inverse .navbar-nav > .active > a,
+		  .navbar-inverse .navbar-nav > .active > a:hover,
+		  .navbar-inverse .navbar-nav > .active > a:focus {
+			    color: #ffffff;
+			      background-color: #44A5BC;
+		      }
+		      .navbar-inverse .navbar-nav > .disabled > a,
+		      .navbar-inverse .navbar-nav > .disabled > a:hover,
+		      .navbar-inverse .navbar-nav > .disabled > a:focus {
+			        color: #6BA4B8;
+				  background-color: transparent;
+			  }
+			  .navbar-inverse .navbar-toggle {
+				    border-color: transparent;
+			    }
+			    .navbar-inverse .navbar-toggle:hover,
+			    .navbar-inverse .navbar-toggle:focus {
+				      background-color: #E0E9EE;
+			      }
+			      .navbar-inverse .navbar-toggle .icon-bar {
+				        background-color: #ffffff;
+				}
+				.navbar-inverse .navbar-collapse,
+				.navbar-inverse .navbar-form {
+					  border-color: #1a6ecc;
+				  }
+				  .navbar-inverse .navbar-nav > .open > a,
+				  .navbar-inverse .navbar-nav > .open > a:hover,
+				  .navbar-inverse .navbar-nav > .open > a:focus {
+					    background-color: #E0E9EE;
+					      color: #ffffff;
+				      }
+				      @media (max-width: 767px) {
+					        .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
+							    border-color: #E0E9EE;
+							      }
+							        .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
+									    background-color: #E0E9EE;
+									      }
+									        .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+											    color: #ffffff;
+											      }
+											        .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
+												  .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
+													      color: #ffffff;
+													          background-color: #E0E9EE;
+														    }
+														      .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
+														        .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
+															  .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
+																      color: #ffffff;
+																          background-color: #E0E9EE;
+																	    }
+																	      .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a,
+																	        .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+																		  .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+																			      color: #ffffff;
+																			          background-color: transparent;
+																				    }
+																			    }
+																			    .navbar-inverse .navbar-link {
+																				      color: #ffffff;
+																			      }
+																			      .navbar-inverse .navbar-link:hover {
+																				        color: #ffffff;
+																				}
+																				.navbar-inverse .btn-link {
+																					  color: #ffffff;
+																				  }
+																				  .navbar-inverse .btn-link:hover,
+																				  .navbar-inverse .btn-link:focus {
+																					    color: #ffffff;
+																				    }
+																				    .navbar-inverse .btn-link[disabled]:hover,
+																				    fieldset[disabled] .navbar-inverse .btn-link:hover,
+																				    .navbar-inverse .btn-link[disabled]:focus,
+																				    fieldset[disabled] .navbar-inverse .btn-link:focus {
+																					      color: #ffffff;
+																				      }

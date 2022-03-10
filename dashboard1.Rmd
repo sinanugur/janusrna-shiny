@@ -1,0 +1,295 @@
+---
+title: "JanusRNA results"
+output: 
+  flexdashboard::flex_dashboard:
+    #logo: logo-en.png
+    css: style.css
+    orientation: columns
+    vertical_layout: fill
+    social: [ "menu" ]
+    #navbar:
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+require(plotly)
+require(flexdashboard)
+require(shiny)
+require(shinythemes)
+require(tidyverse)
+data_rna_table <- read_tsv("all_rna_tables.tsv")
+rna_colors=c("lncRNA"='#a6cee3',"miRNA"='#ff7f00',"miscRNA"='#b2df8a',"tRF"='#33a02c',"tRNA derived"='#33a02c',
+                    "piRNA"='#b15928',"mRNA"='#6a3d9a',"tRNA"='#1f78b4',"snoRNA"='#cab2d6',"hairpin"='#fb9a99',"isomiR"='#e31a1c',"others"="grey")
+
+```
+
+
+Home
+==========================================================================================
+
+<p style="font-size:30px;color:#003e69"">JanusRNA - identification of early cancer biomarkers </p>
+
+This site provides easy access to all associations and published results from [the JanusRNA study](https://www.kreftregisteret.no/en/janusrna), powered by shiny.
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p> Please cite our papers if you find this useful:</p>
+<p>&nbsp;</p>
+
+Umu, S. U., Langseth, H., Bucher-Johannessen, C., Fromm, B., Keller, A., Meese, E., … Rounge, T. B. (2018). A comprehensive profile of circulating RNAs in human serum. RNA Biology, 15(2). [10.1080/15476286.2017.1403003](https://www.tandfonline.com/doi/full/10.1080/15476286.2017.1403003)
+
+Rounge, T. B., Umu, S. U., Keller, A., Meese, E., Ursin, G., Tretli, S., Lyle, R. and Langseth, H. (2018). **Circulating small non-coding RNAs associated with age, sex, smoking, body mass and physical activity**. _Scientific Reports_, 8(1), 17650. DOI: [10.1038/s41598-018-35974-4](https://doi.org/10.1038/s41598-018-35974-4)
+
+Umu, S. U., Langseth, H., Keller, A., Meese, E., Helland, Å., Lyle, R., & Rounge, T. B. (2020). **A 10‐year prediagnostic follow‐up study shows that serum RNA signals are highly dynamic in lung carcinogenesis**. _Molecular Oncology_, 14(2), 235–247. DOI: [10.1002/1878-0261.12620](https://doi.org/10.1002/1878-0261.12620)
+
+Burton, J., Umu, S. U., Langseth, H., Grotmol, T., Grimsrud, T. K., Haugen, T. B., & Rounge, T. B. (2020). **Serum RNA Profiling in the 10-Years Period Prior to Diagnosis of Testicular Germ Cell Tumor**. _Frontiers in Oncology_, 10, 574977. [10.3389/fonc.2020.574977](https://doi.org/10.3389/fonc.2020.574977)
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+
+
+
+<p>© JanusRNA, `r format(Sys.Date(),"%Y")`</p>
+
+RNA profiles
+==========================================================================================
+Column {data-width=700}
+-----------------------------------------------------------------------
+
+### Serum RNA profiles
+
+```{r}
+shinyAppFile("healthy/app.R",options = list(width="100%"))
+
+```
+
+Column {data-width=250}
+-----------------------------------------------------------------------
+
+### Sample Statistics
+
+```{r}
+valueBox(477,icon="fa-vials",color = "#44A5BC",caption="Serum Samples<br> from cancer-free individuals")
+
+```
+
+### Legends
+
+**ID**: This is RNA ID but it is `sequence` for isomiRs and tRNA-derived fragments.
+
+**medians**: Median of counts among 477 samples.
+
+**median_rpm**: Median of RPM values among 477 samples.
+
+**upper_rpm**: Upper quantile of RPM values.
+
+**lower_rpm**: Lower quantile of RPMs values.
+
+**sd_rpm**: Standart deviation of RPM values.
+
+**mean_rpm**: Mean of RPM values.
+
+**Type**: Classification of RNA.
+
+***
+**miRBase**: The miRBase ID of host miRNA (for isomiRs).
+
+**miRBase_precursor**: The miRBase precursor ID of host miRNA (for isomiRs).
+
+### Citiation
+
+Sinan U. Umu, Hilde Langseth, Cecilie Bucher-Johannessen, Bastian Fromm, Andreas Keller, Eckart Meese, Marianne Lauritzen, Magnus Leithaug, Robert Lyle & Trine B. Rounge (2018) **A comprehensive profile of circulating RNAs in human serum**, *RNA Biology*, 15:2, 242-250, DOI: [10.1080/15476286.2017.1403003](https://www.tandfonline.com/doi/full/10.1080/15476286.2017.1403003)
+
+
+
+
+
+
+Traits vs Expression
+=======================================================================
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### RNA expression vs traits
+
+```{r}
+#shinyAppFile("traits/app.R",options = list(width="100%"))
+
+traits_005_age <- read_tsv("traits_005_age.tsv") %>% 
+  mutate(trait=str_split(trait,",",simplify = T)[,1],age_adjusted="Yes")
+
+
+traits_005 <- read_tsv("traits_005.tsv") %>%
+  mutate(age_adjusted="No")
+
+data_traits_table = bind_rows(traits_005,traits_005_age) %>% 
+  mutate_if(is.double,function(x) signif(x,digits = 4))
+
+
+selectInput("type",
+                                     "RNA Type:",
+                                     c("All",
+                                       unique(as.character(data_traits_table$Type))))
+
+selectInput("trait",
+                                     "Trait:",
+                                     c("All",
+                                       unique(as.character(data_traits_table$trait))))
+
+  
+numericInput("padj",
+                                   "Adjusted P value treshold:",
+                                   c(0.05))
+
+selectInput("age_adjusted",
+                                    "Age adjusted:",
+                                    c("No","Yes","All"))
+
+  # Filter data based on selections
+  DT::renderDataTable(DT::datatable({
+    data <- data_traits_table %>% arrange(Type,desc(padj))
+    
+    if (input$trait != "All") {
+      data <- data %>% dplyr::filter(trait == input$trait)
+      
+    }
+    
+    if (input$type != "All") {
+      data <- data %>% dplyr::filter(Type == input$type)
+    }
+    
+  
+    data %>% dplyr::filter(padj <= input$padj) %>% {if(input$age_adjusted == "All") dplyr::filter(.) else dplyr::filter(.,age_adjusted == input$age_adjusted)}
+    
+    
+  }))
+
+ 
+
+#shinyApp(ui=ui,server = server)
+
+
+```
+
+Row {data-height=100 data-width=300}
+-----------------------------------------------------------------------
+
+### Plot
+
+```{r}
+
+#absolutePanel(shinyAppFile("traitsWidget/app.R",options = list(width="100%")))
+
+renderPlot({
+  
+      legendpos="bottom"
+    alpha=1
+  
+    data <- data_traits_table %>% filter(age_adjusted == input$age_adjusted,padj <= input$padj)
+    
+  if(input$type != "All" & input$trait != "All" ) {
+    
+    data <- data %>% filter(trait %in% input$trait,Type %in% input$type)
+      
+  } else {
+  
+    if(input$type == "All" & input$trait != "All") {
+   
+      data <- data %>% filter(trait %in% input$trait)
+      
+    } else if (input$type != "All" & input$trait == "All") {
+      
+      data <- data %>% filter(Type %in% input$type)
+      
+    } else {
+      
+      data
+      
+    }
+    
+   
+   }
+  
+  
+  p1a <- ggplot(data,aes(x=log2FoldChange,y=-log10(padj),color=Type)) + 
+    geom_point(alpha = alpha) + 
+    theme_minimal(base_size = 14) + scale_color_manual(values=rna_colors) + theme(legend.position = legendpos)
+    
+  #g <- ggplotly(p1a) %>% layout(legend=list(orientation="h"))
+  
+  #build <- plotly_build(g)
+  
+  p1a
+})
+
+
+
+```
+
+### Citiation
+
+Rounge, T. B., Umu, S. U., Keller, A., Meese, E., Ursin, G., Tretli, S., Lyle, R. and Langseth, H. (2018). **Circulating small non-coding RNAs associated with age, sex, smoking, body mass and physical activity**. _Scientific Reports_, 8(1), 17650. DOI: [10.1038/s41598-018-35974-4](https://doi.org/10.1038/s41598-018-35974-4)
+
+
+
+Lung Cancer Dynamics {data-orientation=rows}
+=======================================================================
+
+Row {data-height=600}
+-----------------------------------------------------------------------
+
+### Prediagnostic lung cancer dynamics supplementary results
+
+```{r}
+shinyAppFile("lung1/app.R",options = list(width="100%"))
+
+#absolutePanel(draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",        width = 330, height = "auto")
+
+```
+
+Row {.tabset .tabset-fade data-height=100}
+-----------------------------------------------------------------------
+
+### Sample Statistics
+
+```{r}
+#valueBox(526,icon="fa-vials",color = "#44A5BC",caption="Serum Samples<br> from cancer-free individuals")
+
+```
+
+### Legends
+
+```{r}
+
+#absolutePanel(shinyAppFile("traitsWidget/app.R",options = list(width="100%")))
+
+
+```
+
+### Citiation
+
+Umu, S. U., Langseth, H., Keller, A., Meese, E., Helland, Å., Lyle, R., & Rounge, T. B. (2020). **A 10‐year prediagnostic follow‐up study shows that serum RNA signals are highly dynamic in lung carcinogenesis**. _Molecular Oncology_, 14(2), 235–247. DOI: [10.1002/1878-0261.12620](https://doi.org/10.1002/1878-0261.12620)
+
+
+
+TGCT dynamics {data-orientation=rows}
+=======================================================================
+
+### Prediagnostic TGCT dynamics supplementary file
+
+```{r}
+shinyAppFile("tgct/app.R",options = list(width="100%"))
+
+#absolutePanel(draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",        width = 330, height = "auto")
+
+```
+
+
+
+
+
+
